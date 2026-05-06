@@ -42,7 +42,7 @@ if (role === "admin") {
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.heading}>Welcome Back 👋</h2>
+        <h2 style={styles.heading}>Welcome Back </h2>
         <p style={styles.subText}>Login to your account</p>
 
         {/* EMAIL */}
@@ -80,7 +80,7 @@ if (role === "admin") {
 </select>
 
 
-        {/* ✅ FORGOT PASSWORD */}
+        {/* FORGOT PASSWORD */}
         <p
           style={styles.forgot}
           onClick={() => navigate("/forgot")

@@ -1,6 +1,6 @@
 import Resource from "../models/Resource.js";
 
-// GET ALL RESOURCES
+// 📥 GET ALL
 export const getResources = async (req, res) => {
   try {
     const resources = await Resource.find();
@@ -10,13 +10,13 @@ export const getResources = async (req, res) => {
   }
 };
 
-// CREATE RESOURCE
+// 📤 CREATE
 export const createResource = async (req, res) => {
   try {
     const resource = new Resource({
       title: req.body.title,
       category: req.body.category,
-      file: req.file?.path || "",
+      file: req.file.filename, // ✅ important
     });
 
     await resource.save();
@@ -26,7 +26,25 @@ export const createResource = async (req, res) => {
   }
 };
 
-// DELETE RESOURCE
+// ✏️ UPDATE
+export const updateResource = async (req, res) => {
+  try {
+    const updated = await Resource.findByIdAndUpdate(
+      req.params.id,
+      {
+        title: req.body.title,
+        category: req.body.category,
+      },
+      { new: true }
+    );
+
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// 🗑 DELETE
 export const deleteResource = async (req, res) => {
   try {
     await Resource.findByIdAndDelete(req.params.id);

@@ -32,7 +32,7 @@ function Register() {
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.heading}>Create Account 🚀</h2>
+        <h2 style={styles.heading}>Create Account </h2>
         <p style={styles.subText}>Register to get started</p>
 
         <input
