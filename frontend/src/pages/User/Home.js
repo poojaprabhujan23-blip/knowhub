@@ -8,65 +8,89 @@ function Home() {
       <div style={styles.overlay}></div>
 
       <div style={styles.card}>
-        {/* TITLE */}
-        <h1 style={styles.title}>📚 KnowHub</h1>
+        {/* HEADER */}
+        <div style={styles.header}>
+          <div style={styles.logoContainer}>
+            <div style={styles.logoCircle}>📚</div>
 
-        {/* SUBTITLE */}
+            <div>
+              <h1 style={styles.logoText}>KnowHub</h1>
+              <p style={styles.tagline}>
+                Knowledge Management System
+              </p>
+            </div>
+          </div>
+
+          <div style={styles.navLinks}>
+            <span style={styles.navItem}>Home</span>
+            <span style={styles.navItem}>Resources</span>
+          </div>
+        </div>
+
+        {/* HERO */}
+        <h2 style={styles.heading}>
+          Learn Smarter. Share Faster.
+        </h2>
+
         <p style={styles.subtitle}>
-          Your one-stop platform to upload, explore and manage academic resources easily.
+          Upload, discover and collaborate on academic resources
+          in one modern platform.
         </p>
 
         {/* BUTTONS */}
         <div style={styles.buttons}>
           <button
-            style={styles.loginBtn}
-            onClick={() => navigate("/login")}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.transform = "scale(1.05)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.transform = "scale(1)")
-            }
-          >
-            Login
-          </button>
-
-          <button
             style={styles.registerBtn}
             onClick={() => navigate("/register")}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.transform = "scale(1.05)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.transform = "scale(1)")
-            }
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow =
+                "0 0 18px rgba(168,85,247,0.8)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow =
+                "0 4px 12px rgba(168,85,247,0.4)";
+            }}
           >
             Register
           </button>
+
+          <button
+            style={styles.loginBtn}
+            onClick={() => navigate("/login")}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow =
+                "0 0 18px rgba(255,255,255,0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow =
+                "0 4px 12px rgba(0,0,0,0.2)";
+            }}
+          >
+            Login
+          </button>
         </div>
 
-        {/* FEATURE CARDS */}
+        {/* FEATURES */}
         <div style={styles.featureGrid}>
           <div style={styles.featureCard}>
-            <h4>📤 Upload</h4>
-            <p>Share notes & study material</p>
+            <div style={styles.icon}>📤</div>
+            <p style={styles.featureText}>Upload Notes</p>
           </div>
 
           <div style={styles.featureCard}>
-            <h4>🔍 Search</h4>
-            <p>Find resources instantly</p>
+            <div style={styles.icon}>🔍</div>
+            <p style={styles.featureText}>Search Resources</p>
           </div>
 
           <div style={styles.featureCard}>
-            <h4>📥 Download</h4>
-            <p>Access files anytime</p>
+            <div style={styles.icon}>💬</div>
+            <p style={styles.featureText}>Collaborate</p>
           </div>
         </div>
-
 
         {/* FOOTER */}
         <p style={styles.footer}>
-          Built with ❤️ for learning & sharing knowledge
+          Built with ❤️ for collaborative learning
         </p>
       </div>
     </div>
@@ -79,100 +103,161 @@ const styles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
     background:
-      "linear-gradient(135deg, #3b82f6, #9333ea, #06b6d4)",
+      "linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #7e22ce 100%)",
+    fontFamily: "'Poppins', sans-serif",
+    position: "relative",
+    overflow: "hidden",
   },
 
   overlay: {
     position: "absolute",
     width: "100%",
     height: "100%",
-    backdropFilter: "blur(10px)",
+    background:
+      "radial-gradient(circle at top right, rgba(255,255,255,0.1), transparent 40%)",
   },
 
   card: {
     position: "relative",
     zIndex: 1,
-    background: "rgba(255, 255, 255, 0.15)",
-    padding: "40px",
-    borderRadius: "20px",
-    textAlign: "center",
+    width: "500px",
+    padding: "24px",
+    borderRadius: "22px",
+    background: "rgba(255,255,255,0.10)",
+    border: "1px solid rgba(255,255,255,0.15)",
+    backdropFilter: "blur(16px)",
+    boxShadow: "0 8px 28px rgba(0,0,0,0.25)",
     color: "white",
-    width: "400px",
-    backdropFilter: "blur(20px)",
-    boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
+    textAlign: "center",
   },
 
-  title: {
-    fontSize: "32px",
+  /* HEADER */
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: "22px",
+  },
+
+  logoContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+  },
+
+  logoCircle: {
+    width: "38px",
+    height: "38px",
+    borderRadius: "10px",
+    background: "linear-gradient(to right, #3b82f6, #9333ea)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "16px",
+  },
+
+  logoText: {
+    margin: 0,
+    fontSize: "20px",
+    fontWeight: "700",
+  },
+
+  tagline: {
+    margin: 0,
+    fontSize: "10px",
+    color: "#cbd5e1",
+  },
+
+  navLinks: {
+    display: "flex",
+    gap: "10px",
+  },
+
+  navItem: {
+    fontSize: "12px",
+    color: "#e2e8f0",
+    padding: "5px 8px",
+    borderRadius: "6px",
+    background: "rgba(255,255,255,0.06)",
+  },
+
+  /* HERO */
+  heading: {
+    fontSize: "30px",
     marginBottom: "10px",
+    fontWeight: "700",
   },
 
   subtitle: {
     fontSize: "14px",
-    marginBottom: "15px",
-  },
-
-  features: {
-    marginBottom: "20px",
-    fontSize: "13px",
-    textAlign: "left",
     lineHeight: "1.6",
+    color: "#dbeafe",
+    marginBottom: "24px",
   },
 
+  /* BUTTONS */
   buttons: {
     display: "flex",
-    justifyContent: "space-between",
-    marginBottom: "20px",
-  },
-
-  loginBtn: {
-    width: "48%",
-    padding: "12px",
-    borderRadius: "10px",
-    border: "none",
-    background: "#1e293b",
-    color: "white",
-    fontWeight: "bold",
-    cursor: "pointer",
-    transition: "0.3s",
+    gap: "12px",
+    marginBottom: "24px",
   },
 
   registerBtn: {
-    width: "48%",
+    flex: 1,
     padding: "12px",
-    borderRadius: "10px",
+    borderRadius: "12px",
     border: "none",
-    background: "#22c55e",
+    background: "linear-gradient(to right, #a855f7, #7e22ce)",
     color: "white",
-    fontWeight: "bold",
+    fontWeight: "600",
+    fontSize: "14px",
     cursor: "pointer",
     transition: "0.3s",
+    boxShadow: "0 4px 12px rgba(168,85,247,0.4)",
   },
 
+  loginBtn: {
+    flex: 1,
+    padding: "12px",
+    borderRadius: "12px",
+    border: "1px solid rgba(255,255,255,0.2)",
+    background: "rgba(255,255,255,0.12)",
+    color: "white",
+    fontWeight: "600",
+    fontSize: "14px",
+    cursor: "pointer",
+    transition: "0.3s",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+  },
+
+  /* FEATURES */
   featureGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr 1fr",
-    gap: "10px",
-    marginBottom: "20px",
+    gap: "12px",
+    marginBottom: "18px",
   },
 
   featureCard: {
-    background: "rgba(255,255,255,0.2)",
-    padding: "10px",
-    borderRadius: "10px",
-    fontSize: "12px",
+    background: "rgba(255,255,255,0.08)",
+    borderRadius: "14px",
+    padding: "14px",
   },
 
-  howItWorks: {
-    marginBottom: "15px",
-    fontSize: "13px",
+  icon: {
+    fontSize: "22px",
+    marginBottom: "6px",
+  },
+
+  featureText: {
+    fontSize: "12px",
+    color: "#dbeafe",
   },
 
   footer: {
-    fontSize: "12px",
-    opacity: 0.8,
+    fontSize: "17px",
+    color: "#cbd5e1",
   },
 };
 

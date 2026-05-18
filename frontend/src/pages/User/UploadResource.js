@@ -19,7 +19,6 @@ function UploadResource() {
     data.append("title", formData.title);
     data.append("description", formData.description);
 
-    // ✅ FINAL CATEGORY VALUE
     const finalCategory =
       formData.category === "OTHER"
         ? customCategory
@@ -30,15 +29,16 @@ function UploadResource() {
 
     try {
       await addResource(data);
+
       alert("✅ Resource uploaded!");
 
-      // reset form
       setFormData({
         title: "",
         description: "",
         category: "",
         file: null,
       });
+
       setCustomCategory("");
     } catch (error) {
       console.log(error);
@@ -48,23 +48,37 @@ function UploadResource() {
 
   return (
     <div style={styles.container}>
+      <div style={styles.overlay}></div>
+
       <form onSubmit={handleSubmit} style={styles.form}>
-        <h2 style={styles.heading}>📤 Upload Resource</h2>
+        <div style={styles.iconBox}>📤</div>
+
+        <h2 style={styles.heading}>Upload Resource</h2>
+
+        <p style={styles.subText}>
+          Share notes, PDFs and educational materials with
+          students through KnowHub.
+        </p>
 
         {/* TITLE */}
         <label style={styles.label}>Title</label>
+
         <input
           type="text"
           placeholder="Enter title"
           value={formData.title}
           onChange={(e) =>
-            setFormData({ ...formData, title: e.target.value })
+            setFormData({
+              ...formData,
+              title: e.target.value,
+            })
           }
           style={styles.input}
         />
 
         {/* DESCRIPTION */}
         <label style={styles.label}>Description</label>
+
         <textarea
           placeholder="Enter description"
           value={formData.description}
@@ -79,6 +93,7 @@ function UploadResource() {
 
         {/* CATEGORY */}
         <label style={styles.label}>Category</label>
+
         <select
           value={formData.category}
           onChange={(e) =>
@@ -87,7 +102,7 @@ function UploadResource() {
               category: e.target.value,
             })
           }
-          style={styles.input}
+          style={styles.select}
         >
           <option value="">Select Category</option>
           <option value="DBMS">DBMS</option>
@@ -98,19 +113,22 @@ function UploadResource() {
           <option value="OTHER">Other</option>
         </select>
 
-        {/* 👇 SHOW ONLY IF OTHER */}
+        {/* CUSTOM CATEGORY */}
         {formData.category === "OTHER" && (
           <input
             type="text"
             placeholder="Enter custom category"
             value={customCategory}
-            onChange={(e) => setCustomCategory(e.target.value)}
+            onChange={(e) =>
+              setCustomCategory(e.target.value)
+            }
             style={styles.input}
           />
         )}
 
         {/* FILE */}
         <label style={styles.label}>Upload File</label>
+
         <input
           type="file"
           onChange={(e) =>
@@ -123,8 +141,21 @@ function UploadResource() {
         />
 
         {/* BUTTON */}
-        <button type="submit" style={styles.button}>
-          Upload 🚀
+        <button
+          type="submit"
+          style={styles.button}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "translateY(-3px)";
+            e.target.style.boxShadow =
+              "0 12px 25px rgba(59,130,246,0.45)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0px)";
+            e.target.style.boxShadow =
+              "0 8px 20px rgba(59,130,246,0.35)";
+          }}
+        >
+          Upload Resource 🚀
         </button>
       </form>
     </div>
@@ -133,62 +164,132 @@ function UploadResource() {
 
 const styles = {
   container: {
+    position: "relative",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "100vh",
-    background: "linear-gradient(to right, #e2e8f0, #f8fafc)",
+    minHeight: "100vh",
+    padding: "30px",
+    background:
+      "linear-gradient(135deg, #020617 0%, #1e1b4b 50%, #6d28d9 100%)",
+    fontFamily: "'Poppins', sans-serif",
+    overflow: "hidden",
+  },
+
+  overlay: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    background:
+      "radial-gradient(circle at top right, rgba(255,255,255,0.08), transparent 40%)",
   },
 
   form: {
-    background: "white",
-    padding: "30px",
-    borderRadius: "12px",
-    width: "400px",
-    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+    position: "relative",
+    zIndex: 1,
+    width: "100%",
+    maxWidth: "430px",
+    background: "rgba(255,255,255,0.10)",
+    border: "1px solid rgba(255,255,255,0.12)",
+    backdropFilter: "blur(16px)",
+    borderRadius: "28px",
+    padding: "35px",
     display: "flex",
     flexDirection: "column",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+  },
+
+  iconBox: {
+    width: "70px",
+    height: "70px",
+    borderRadius: "20px",
+    background:
+      "linear-gradient(to right, #3b82f6, #8b5cf6)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: "30px",
+    margin: "0 auto 18px",
+    boxShadow: "0 0 25px rgba(139,92,246,0.45)",
   },
 
   heading: {
     textAlign: "center",
-    marginBottom: "20px",
-    color: "#1e293b",
+    marginBottom: "8px",
+    color: "white",
+    fontSize: "2rem",
+    fontWeight: "700",
+  },
+
+  subText: {
+    textAlign: "center",
+    color: "#cbd5e1",
+    marginBottom: "25px",
+    fontSize: "0.92rem",
+    lineHeight: "1.6",
   },
 
   label: {
-    fontSize: "14px",
-    marginBottom: "5px",
-    color: "#475569",
+    fontSize: "0.92rem",
+    marginBottom: "6px",
+    color: "#e2e8f0",
+    fontWeight: "500",
   },
 
   input: {
-    padding: "10px",
-    marginBottom: "15px",
-    borderRadius: "6px",
-    border: "1px solid #cbd5e1",
+    padding: "12px",
+    marginBottom: "16px",
+    borderRadius: "12px",
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "rgba(255,255,255,0.08)",
+    color: "white",
+    outline: "none",
+    fontSize: "0.95rem",
+  },
+
+  select: {
+    padding: "12px",
+    marginBottom: "16px",
+    borderRadius: "12px",
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "white",
+    color: "#111827",
+    outline: "none",
+    fontSize: "0.95rem",
+    fontWeight: "500",
   },
 
   textarea: {
-    padding: "10px",
-    marginBottom: "15px",
-    borderRadius: "6px",
-    border: "1px solid #cbd5e1",
-    minHeight: "80px",
+    padding: "12px",
+    marginBottom: "16px",
+    borderRadius: "12px",
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "rgba(255,255,255,0.08)",
+    color: "white",
+    outline: "none",
+    minHeight: "90px",
+    resize: "none",
+    fontSize: "0.95rem",
   },
 
   file: {
-    marginBottom: "20px",
+    marginBottom: "24px",
+    color: "#e2e8f0",
+    fontSize: "0.92rem",
   },
 
   button: {
-    padding: "12px",
-    backgroundColor: "#1e293b",
+    padding: "14px",
+    background:
+      "linear-gradient(to right, #3b82f6, #8b5cf6)",
     color: "white",
     border: "none",
-    borderRadius: "6px",
+    borderRadius: "14px",
     cursor: "pointer",
-    fontWeight: "bold",
+    fontWeight: "600",
+    fontSize: "1rem",
+    transition: "0.3s",
+    boxShadow: "0 8px 20px rgba(59,130,246,0.35)",
   },
 };
 

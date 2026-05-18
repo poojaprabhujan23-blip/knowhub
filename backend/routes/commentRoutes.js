@@ -1,20 +1,31 @@
 import express from "express";
-import Comment from "../models/Comment.js";
+
+import {
+  createComment,
+  getComments,
+  updateComment,
+  deleteComment,
+  addReply,
+  editReply,
+  deleteReply,
+} from "../controllers/commentController.js";
 
 const router = express.Router();
 
-// 📥 GET COMMENTS
-router.get("/:resourceId", async (req, res) => {
-  const comments = await Comment.find({
-    resourceId: req.params.resourceId,
-  });
-  res.json(comments);
-});
+//COMMENTS
+router.post("/", createComment);
 
-// 📤 POST COMMENT
-router.post("/", async (req, res) => {
-  const comment = await Comment.create(req.body);
-  res.json(comment);
-});
+router.get("/:resourceId", getComments);
+
+router.put("/:id", updateComment);
+
+router.delete("/:id", deleteComment);
+
+//REPLIES
+router.put("/reply/:id", addReply);
+
+router.put("/reply/edit/:id", editReply);
+
+router.delete("/reply/:id", deleteReply);
 
 export default router;

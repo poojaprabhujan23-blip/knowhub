@@ -7,6 +7,9 @@ import Home from "./pages/User/Home";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 
+import ForgotPassword from "./pages/Auth/ForgotPassword";
+import ResetPassword from "./pages/Auth/ResetPassword";
+
 // Dashboards
 import AdminDashboard from "./pages/Admin/AdminDashboard";
 import Dashboard from "./pages/User/Dashboard"; // Contributor
@@ -34,6 +37,12 @@ function App() {
         {/* 🔐 AUTH */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+     {/* FORGOT PASSWORD */}
+    <Route path="/forgot-password" element={<ForgotPassword />} />
+
+    {/* RESET PASSWORD */}
+    <Route path="/reset/:token" element={<ResetPassword />} />
 
         {/* 👑 ADMIN */}
         <Route

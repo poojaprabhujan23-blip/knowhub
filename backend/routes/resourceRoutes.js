@@ -5,6 +5,7 @@ import {
   getResources,
   createResource,
   deleteResource,
+  updateResource,
 } from "../controllers/resourceController.js";
 
 import { protect, authorizeRoles } from "../middleware/authMiddleware.js";
@@ -25,5 +26,7 @@ router.get("/", getResources);
 router.post("/", upload.single("file"), createResource);
 
 router.delete("/:id", deleteResource);
+
+router.put("/:id", updateResource);
 
 export default router;

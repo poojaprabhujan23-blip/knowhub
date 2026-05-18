@@ -1,67 +1,53 @@
 import { useState } from "react";
+import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { resetPassword } from "../../api/authApi";
 
 function ResetPassword() {
-  const [password, setPassword] = useState("");
   const { token } = useParams();
   const navigate = useNavigate();
+
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    console.log("TOKEN FROM URL:", token); // DEBUG
+
     try {
-      await resetPassword(token, password);
-      alert("Password updated!");
+      const res = await axios.post(
+        `http://localhost:5000/api/auth/reset-password/${token}`,
+        { password }
+      );
+
+      alert(res.data.message);
       navigate("/login");
+
     } catch (err) {
-      alert("Reset failed");
+      console.log(err);
+      alert(err.response?.data?.message);
     }
   };
 
   return (
-    <div style={styles.container}>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <h2>Reset Password</h2>
+    <div>
+      <h2>Reset Password</h2>
 
+      <form onSubmit={handleSubmit}>
         <input
           type="password"
-          placeholder="Enter new password"
+          placeholder="New Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
+          onChange={(e) =>
+            setPassword(e.target.value)
+          }
         />
 
-        <button type="submit" style={styles.button}>
-          Update Password
+        <button type="submit">
+          Reset Password
         </button>
       </form>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: "100vh",
-  },
-  form: {
-    padding: "30px",
-    background: "white",
-    borderRadius: "10px",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-  },
-  input: {
-    width: "100%",
-    padding: "10px",
-    margin: "10px 0",
-  },
-  button: {
-    padding: "10px",
-    width: "100%",
-  },
-};
 
 export default ResetPassword;

@@ -12,62 +12,82 @@ function AdminDashboard() {
   }, []);
 
   const fetchResources = async () => {
-    const res = await getResources();
-    setResources(res.data);
+    try {
+      const res = await getResources();
+      setResources(res.data || []);
+    } catch (error) {
+      console.log(error);
+      setResources([]);
+    }
   };
 
+  // ✅ ONLY FIXED PART (USERS HANDLING)
   const fetchUsers = async () => {
-    const res = await fetch("http://localhost:5000/api/auth/users");
-    const data = await res.json();
-    setUsers(data);
+    try {
+      const res = await fetch(
+        "http://localhost:5000/api/auth/users"
+      );
+
+      const data = await res.json();
+
+      // FIX: support all backend formats safely
+      const usersList = Array.isArray(data)
+        ? data
+        : data.users || data.data || [];
+
+      setUsers(usersList);
+    } catch (error) {
+      console.log(error);
+      setUsers([]);
+    }
   };
 
-  const roleCount = users.reduce((acc, u) => {
-    acc[u.role] = (acc[u.role] || 0) + 1;
-    return acc;
-  }, {});
-
-  // 📚 More realistic book system
   const books = [
     {
       id: "analytics",
       title: "Analytics Intelligence",
       subtitle: "System performance & insights",
       description:
-        "Explore how your platform is performing with real-time insights and system health tracking.",
-      color1: "#4f46e5",
-      color2: "#818cf8",
+        "Explore how your platform is performing with real-time insights and system analytics.",
+      color1: "#3b82f6",
+      color2: "#8b5cf6",
       icon: "📊",
     },
+
     {
       id: "users",
       title: "User Universe",
       subtitle: "People, roles & activity",
       description:
-        "Manage and understand your users, their roles, and engagement inside KnowHub.",
+        "Manage users, monitor activity and understand platform engagement.",
       color1: "#22c55e",
-      color2: "#86efac",
+      color2: "#16a34a",
       icon: "👥",
     },
+
     {
       id: "resources",
       title: "Knowledge Archive",
-      subtitle: "All stored learning materials",
+      subtitle: "All learning materials",
       description:
-        "Access and manage all uploaded resources, categorized knowledge, and content base.",
+        "Access all uploaded resources and organized knowledge base.",
       color1: "#f59e0b",
-      color2: "#fcd34d",
+      color2: "#f97316",
       icon: "📚",
     },
   ];
 
   return (
     <div style={styles.page}>
-
       {/* HEADER */}
       <div style={styles.header}>
-        <h1>📚 KnowHub Knowledge Library</h1>
-        <p>Click a book to open insights, analytics & structured data</p>
+        <h1 style={styles.mainTitle}>
+          📚 KnowHub Admin Dashboard
+        </h1>
+
+        <p style={styles.subTitle}>
+          Monitor platform intelligence, users and resources
+        </p>
       </div>
 
       {/* BOOK SHELF */}
@@ -95,82 +115,115 @@ function AdminDashboard() {
         ))}
       </div>
 
-      {/* OPEN BOOK VIEW */}
+      {/* OPEN BOOK */}
       {openBook && (
         <div style={styles.reader}>
-
-          <button style={styles.closeBtn} onClick={() => setOpenBook(null)}>
-            ✕ Close Book
+          <button
+            style={styles.closeBtn}
+            onClick={() => setOpenBook(null)}
+          >
+            ✕ Close
           </button>
 
-          <h2 style={styles.welcome}>👋 Welcome to KnowHub Insights</h2>
+          <h2 style={styles.welcome}>
+            👋 Welcome to KnowHub Insights
+          </h2>
+
           <p style={styles.subWelcome}>
-            This book contains structured intelligence from your system.
+            Smart analytics and management tools
           </p>
 
           {/* ANALYTICS */}
           {openBook === "analytics" && (
             <div style={styles.section}>
-              <h3>📊 System Intelligence Report</h3>
+              <h3>📊 Platform Analytics</h3>
 
-              <div style={styles.grid}>
-                <div style={styles.card}>
-                  <h4>Total Users</h4>
-                  <p>{users.length}</p>
+              <div style={styles.analyticsTable}>
+                <div style={styles.analyticsRow}>
+                  <span>Total Users</span>
+                  <span style={styles.analyticsValue}>
+                    {Array.isArray(users) ? users.length : 0}
+                  </span>
                 </div>
 
-                <div style={styles.card}>
-                  <h4>Total Resources</h4>
-                  <p>{resources.length}</p>
-                </div>
+                <div style={styles.analyticsRow}>
+                  <span>Total Resources</span>
+                  <span style={styles.analyticsValue}>
+                    {Array.isArray(resources) ? resources.length : 0}
+                  </span>
                 </div>
               </div>
+            </div>
           )}
 
           {/* USERS */}
           {openBook === "users" && (
             <div style={styles.section}>
-              <h3>👥 User Intelligence Directory</h3>
+              <h3>👥 User Directory</h3>
 
-              <p style={styles.infoText}>
-                Total Roles Breakdown: Admins, Contributors & Viewers in your system.
-              </p>
+              <div style={styles.tableWrapper}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Name</th>
+                      <th style={styles.th}>Email</th>
+                      <th style={styles.th}>Role</th>
+                    </tr>
+                  </thead>
 
-              {users.map((u) => (
-                <div key={u._id} style={styles.row}>
-                  <div>
-                    <strong>{u.name}</strong>
-                    <p style={styles.muted}>{u.email}</p>
-                  </div>
-                  <span style={styles.badge}>{u.role}</span>
-                </div>
-              ))}
+                  <tbody>
+                    {Array.isArray(users) &&
+                      users.map((u) => (
+                        <tr key={u._id}>
+                          <td style={styles.td}>{u.name}</td>
+                          <td style={styles.td}>{u.email}</td>
+                          <td style={styles.td}>
+                            <span style={styles.badge}>
+                              {u.role}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
           {/* RESOURCES */}
           {openBook === "resources" && (
             <div style={styles.section}>
-              <h3>📚 Knowledge Archive</h3>
+              <h3>📚 Resource Archive</h3>
 
-              <p style={styles.infoText}>
-                All uploaded learning resources and categorized knowledge base.
-              </p>
+              <div style={styles.tableWrapper}>
+                <table style={styles.table}>
+                  <thead>
+                    <tr>
+                      <th style={styles.th}>Title</th>
+                      <th style={styles.th}>Category</th>
+                    </tr>
+                  </thead>
 
-              {resources.map((r) => (
-                <div key={r._id} style={styles.row}>
-                  <div>
-                    <strong>{r.title || "Untitled Resource"}</strong>
-                    <p style={styles.muted}>{r.category || "General"}</p>
-                  </div>
-                </div>
-              ))}
+                  <tbody>
+                    {resources.map((r) => (
+                      <tr key={r._id}>
+                        <td style={styles.td}>
+                          {r.title || "Untitled"}
+                        </td>
+                        <td style={styles.td}>
+                          <span style={styles.resourceBadge}>
+                            {r.category || "General"}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
-
         </div>
       )}
-
     </div>
   );
 }
@@ -179,138 +232,212 @@ const styles = {
   page: {
     padding: "35px",
     minHeight: "100vh",
-    fontFamily: "Arial",
-    background: "linear-gradient(135deg, #eef2ff, #f8fafc)",
+    fontFamily: "'Poppins', sans-serif",
+    background:
+      "linear-gradient(135deg, #020617 0%, #1e1b4b 50%, #6d28d9 100%)",
+    color: "white",
   },
 
   header: {
-    marginBottom: "25px",
+    marginBottom: "35px",
+  },
+
+  mainTitle: {
+    fontSize: "2.5rem",
+    marginBottom: "10px",
+    fontWeight: "700",
+  },
+
+  subTitle: {
+    color: "#cbd5e1",
+    fontSize: "1rem",
+    lineHeight: "1.7",
+    maxWidth: "700px",
   },
 
   shelf: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-    gap: "18px",
+    gridTemplateColumns:
+      "repeat(auto-fit, minmax(280px, 1fr))",
+    gap: "24px",
   },
 
   book: {
-    padding: "22px",
-    borderRadius: "18px",
+    padding: "24px",
+    borderRadius: "24px",
     color: "#fff",
     cursor: "pointer",
-    boxShadow: "0 15px 35px rgba(0,0,0,0.15)",
+    boxShadow: "0 15px 35px rgba(0,0,0,0.25)",
     transition: "0.3s",
+    border:
+      "1px solid rgba(255,255,255,0.12)",
+    backdropFilter: "blur(12px)",
   },
 
   bookTop: {
     display: "flex",
     justifyContent: "space-between",
-    marginBottom: "10px",
+    marginBottom: "15px",
+    alignItems: "center",
   },
 
   icon: {
-    fontSize: "22px",
+    fontSize: "28px",
   },
 
   tag: {
-    fontSize: "10px",
-    background: "rgba(255,255,255,0.25)",
-    padding: "3px 8px",
+    fontSize: "11px",
+    background: "rgba(255,255,255,0.20)",
+    padding: "5px 12px",
     borderRadius: "999px",
+    fontWeight: "600",
   },
 
   bookTitle: {
-    margin: "0",
+    margin: 0,
+    fontSize: "1.5rem",
+    fontWeight: "700",
   },
 
   bookSubtitle: {
-    fontSize: "13px",
-    opacity: 0.9,
-    marginTop: "5px",
+    fontSize: "14px",
+    marginTop: "8px",
+    color: "#f1f5f9",
   },
 
   bookDesc: {
-    fontSize: "12px",
-    opacity: 0.85,
-    marginTop: "10px",
-    lineHeight: "1.4",
+    fontSize: "13px",
+    marginTop: "15px",
+    lineHeight: "1.7",
+    color: "#e2e8f0",
   },
 
   footerHint: {
-    marginTop: "15px",
-    fontSize: "11px",
-    opacity: 0.8,
+    marginTop: "20px",
+    fontSize: "12px",
+    fontWeight: "600",
   },
 
   reader: {
-    marginTop: "25px",
-    background: "#fff",
-    padding: "25px",
-    borderRadius: "18px",
-    boxShadow: "0 15px 40px rgba(0,0,0,0.1)",
+    marginTop: "35px",
+    background: "rgba(255,255,255,0.10)",
+    border:
+      "1px solid rgba(255,255,255,0.12)",
+    backdropFilter: "blur(14px)",
+    padding: "30px",
+    borderRadius: "26px",
+    boxShadow:
+      "0 15px 40px rgba(0,0,0,0.25)",
   },
 
   closeBtn: {
     float: "right",
     border: "none",
-    background: "#ef4444",
+    background:
+      "linear-gradient(to right, #ef4444, #dc2626)",
     color: "#fff",
-    padding: "6px 12px",
-    borderRadius: "8px",
+    padding: "10px 16px",
+    borderRadius: "12px",
     cursor: "pointer",
+    fontWeight: "600",
+    boxShadow:
+      "0 6px 16px rgba(239,68,68,0.35)",
   },
 
   welcome: {
-    marginBottom: "5px",
+    marginBottom: "8px",
+    fontSize: "2rem",
+    fontWeight: "700",
   },
 
   subWelcome: {
-    color: "#6b7280",
-    marginBottom: "20px",
+    color: "#cbd5e1",
+    marginBottom: "25px",
+    lineHeight: "1.7",
   },
 
   infoText: {
-    color: "#6b7280",
-    fontSize: "13px",
-    marginBottom: "10px",
+    color: "#cbd5e1",
+    fontSize: "14px",
+    marginBottom: "15px",
+    lineHeight: "1.6",
   },
 
   section: {
-    marginTop: "15px",
-  },
-
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-    gap: "12px",
-  },
-
-  card: {
-    background: "#f8fafc",
-    padding: "15px",
-    borderRadius: "12px",
-    textAlign: "center",
-  },
-
-  row: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "12px",
-    borderBottom: "1px solid #eee",
-  },
-
-  muted: {
-    fontSize: "12px",
-    color: "#6b7280",
-    margin: 0,
+    marginTop: "18px",
   },
 
   badge: {
-    background: "#eef2ff",
-    color: "#4f46e5",
-    padding: "4px 10px",
+    background:
+      "linear-gradient(to right, #3b82f6, #8b5cf6)",
+    color: "#fff",
+    padding: "6px 14px",
     borderRadius: "999px",
     fontSize: "12px",
+    fontWeight: "600",
+    textTransform: "capitalize",
+  },
+
+  tableWrapper: {
+    overflowX: "auto",
+    marginTop: "20px",
+  },
+
+  table: {
+    width: "100%",
+    borderCollapse: "collapse",
+    background: "rgba(255,255,255,0.06)",
+    borderRadius: "16px",
+    overflow: "hidden",
+  },
+
+  th: {
+    textAlign: "left",
+    padding: "16px",
+    background: "rgba(255,255,255,0.12)",
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: "14px",
+  },
+
+  td: {
+    padding: "16px",
+    borderBottom:
+      "1px solid rgba(255,255,255,0.08)",
+    color: "#e2e8f0",
+    fontSize: "14px",
+  },
+
+  analyticsTable: {
+    marginTop: "20px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+  },
+
+  analyticsRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    background: "rgba(255,255,255,0.08)",
+    padding: "18px",
+    borderRadius: "14px",
+    fontSize: "15px",
+  },
+
+  analyticsValue: {
+    fontSize: "1.5rem",
+    fontWeight: "700",
+  },
+
+  resourceBadge: {
+    background:
+      "linear-gradient(to right, #f59e0b, #f97316)",
+    color: "#fff",
+    padding: "6px 14px",
+    borderRadius: "999px",
+    fontSize: "12px",
+    fontWeight: "600",
   },
 };
 

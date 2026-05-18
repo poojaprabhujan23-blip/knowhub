@@ -1,55 +1,73 @@
 import Resource from "../models/Resource.js";
 
-// 📥 GET ALL
+// ✅ GET ALL
 export const getResources = async (req, res) => {
   try {
     const resources = await Resource.find();
     res.json(resources);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 
-// 📤 CREATE
+// ✅ CREATE
 export const createResource = async (req, res) => {
   try {
+    if (!req.file) {
+      return res
+        .status(400)
+        .json({ message: "No file uploaded" });
+    }
+
     const resource = new Resource({
       title: req.body.title,
+      description: req.body.description,
       category: req.body.category,
-      file: req.file.filename, // ✅ important
+      file: req.file.filename,
     });
 
     await resource.save();
-    res.json(resource);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+
+    res.status(201).json(resource);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Upload failed",
+    });
   }
 };
 
-// ✏️ UPDATE
+// ✅ DELETE
+export const deleteResource = async (req, res) => {
+  try {
+    await Resource.findByIdAndDelete(req.params.id);
+
+    res.json({
+      message: "Resource deleted",
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// ✅ UPDATE
 export const updateResource = async (req, res) => {
   try {
     const updated = await Resource.findByIdAndUpdate(
       req.params.id,
-      {
-        title: req.body.title,
-        category: req.body.category,
-      },
+      req.body,
       { new: true }
     );
 
     res.json(updated);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
 
-// 🗑 DELETE
-export const deleteResource = async (req, res) => {
-  try {
-    await Resource.findByIdAndDelete(req.params.id);
-    res.json({ message: "Deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
